@@ -1,44 +1,32 @@
 import mongoose, {Schema} from "mongoose";
-const bike_Schema= new mongoose.Schema({
+
+const hostelSchema= new mongoose.Schema({
     name: {
       type: String,
       required: true,
-      trim: true,
-    },
-
-    brand_name: {
-      type: String,
-      required: [true],
       trim: true,
     },
     description: {
       type: String,
       trim: true,
     },
-
-    engine_CC:{
+    roomCapacity: {
         type: Number,
-        required: [true],
+        required: true,
+        min : 1
     },
-    kmRun: {
-      type: Number,
-      default: 0,
+    ac : {
+        type: Boolean,
+        default: true,
     },
     price: {
       type: Number,
       required: true,
       min: 0,
     },      
-    
     availability: {
       type: Boolean,
       default: true,
-    },
-
-    registrationNumber: {
-      type: String,
-      unique: true,
-      trim: true,
     },
     images: [
       {
@@ -55,4 +43,4 @@ const bike_Schema= new mongoose.Schema({
   }
 );
 
-export const bike = mongoose.model("Bike", bikeSchema);
+export const hostel = mongoose.model("Hostel", hostelSchema);
