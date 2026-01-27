@@ -2,6 +2,12 @@ import mongoose, {Schema} from "mongoose";
 
 const userSchema = new Schema(
     {
+        admin : {
+            type: Boolean,
+            default: false,
+            required: true
+        }
+        
         username : {
             type: String,
             required: true,
