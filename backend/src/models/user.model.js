@@ -9,6 +9,7 @@ const userSchema = new Schema(
             unique : true,
             trim: true
         },
+        
         email: {
             type: String,
             required: true,
@@ -17,6 +18,7 @@ const userSchema = new Schema(
             unique : true,
             trim: true
         },
+
         username : {
             type: String,
             required: true,
@@ -24,20 +26,30 @@ const userSchema = new Schema(
             unique : true,
             trim: true
         },
+
         password: {
             type: String,
             required: true,
         },
+
         phone : {
             type: Number,
             required: true,
             unique: true,
             trim: true
         },
+        
         city: {
             type: String,
             required: true,
-        }
+        },
+
+        orders: [
+            {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Order",
+            },
+        ],
     },
     {
     timestamps: true,
