@@ -2,6 +2,12 @@ import mongoose, {Schema} from "mongoose";
 
 const carSchema = new mongoose.Schema(
   {
+    carId: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+
     name: {
       type: String,
       required: true,
