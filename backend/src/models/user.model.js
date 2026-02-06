@@ -23,13 +23,7 @@ const userSchema = new Schema(
             unique : true,
             trim: true
         },
-        username : {
-            type: String,
-            required: true,
-            lowercase : true,
-            unique : true,
-            trim: true
-        },
+        
         password: {
             type: String,
             required: true,
@@ -50,4 +44,5 @@ const userSchema = new Schema(
     }
 )
 
-export const User = mongoose.model("User", userSchema)
+// export const User = mongoose.model("User", userSchema)
+export default mongoose.model('User', userSchema);
