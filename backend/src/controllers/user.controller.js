@@ -1,7 +1,7 @@
 import { User } from "../models/user.model.js"
 import ApiError from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
-
+import { asyncHandler } from "../utils/asyncHandler.js";
 
 const generateAccessandRefreshToken = async(UserId) => {
     try {
@@ -18,16 +18,28 @@ const generateAccessandRefreshToken = async(UserId) => {
     }
 }
 
-export const registerUser=async(req, res)=>{
-    const {username , email, fullname, password, admin = "false", phone, address}= req.body;
+const registerUser=async(req, res)=>{
+    // const {username , email, fullname, password, admin = "false", phone, address}= req.body;
+   let {
+  username,
+  email,
+  fullname,
+  password,
+  admin = false,
+  phone,
+  address
+} = req.body || {};
+
+const cleanUsername = username?.trim();
+  const cleanEmail = email?.trim();
 
     if (
-        [username , email, fullname, password, admin = "false", phone, address].some((fields)=> fields?.trim==="")
+        [username , email, fullname, password, phone, address].some(field => !field || field.trim() === "")
     ){
         throw new ApiError(400, "All fields are required!")
     }
 
-    const existinguser = User.findOne({
+    const existinguser = await User.findOne({
         $or : [{username}, {email}, {phone}]
     })
 
@@ -45,7 +57,7 @@ export const registerUser=async(req, res)=>{
         address
     })
     
-    const createduser = User.findById(user._id).select(
+    const createduser = await User.findById(user._id).select(
         "-password -refreshToken"
     )
 
@@ -60,7 +72,7 @@ export const registerUser=async(req, res)=>{
 }
 
 
-export const loginUser= async (req, res)=>{
+const loginUser= async (req, res)=>{
 
     const {email, username, admin = "false", password} = req.body
 
@@ -78,7 +90,7 @@ export const loginUser= async (req, res)=>{
         throw new ApiError(404, "User does not exist")
     }
 
-    const IsPasswordValid = user.isPasswordCorrect(password)
+    const IsPasswordValid = await user.isPasswordCorrect(password)
 
     if(!IsPasswordValid){
         throw new ApiError(401, "INvalid Credentials")
@@ -112,5 +124,31 @@ export const loginUser= async (req, res)=>{
 }
 
 
+const logoutUser = asyncHandler(async (req, res) => {x
+ 
+  await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $unset: {
+        refreshToken: 1, 
+    },
+},
+    {
+      new: true,
+    }
+  );
 
-module.exports= { registerUser, loginUser }
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict",
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, {}, "User logged out successfully."));
+});
+
+export  { registerUser, loginUser, logoutUser }
