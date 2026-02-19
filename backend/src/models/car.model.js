@@ -2,11 +2,11 @@ import mongoose, {Schema} from "mongoose";
 
 const carSchema = new mongoose.Schema(
   {
-    carId: {
-      type: String,
-      unique: true,
-      required: true,
-    },
+    // carId: {
+    //   type: String,
+    //   unique: true,
+    //   required: true,
+    // },
 
     name: {
       type: String,
@@ -76,4 +76,4 @@ const carSchema = new mongoose.Schema(
   }
 );
 
-export const car = mongoose.model("Car", carSchema);
+export const Car = mongoose.model("Car", carSchema);

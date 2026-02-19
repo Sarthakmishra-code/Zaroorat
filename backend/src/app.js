@@ -18,4 +18,6 @@ import userRouter from "../src/routes/user.routes.js";
 
 app.use("/api/users", userRouter)
 
+app.use("/api/cars", userRouter)
+
 export default app;
