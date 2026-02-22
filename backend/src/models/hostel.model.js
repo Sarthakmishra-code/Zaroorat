@@ -41,6 +41,11 @@ const hostelSchema = new mongoose.Schema(
       default: true,
     },
 
+    city: {
+      type: String,
+      required: true
+    },
+
     images: [
       {
         url: {
