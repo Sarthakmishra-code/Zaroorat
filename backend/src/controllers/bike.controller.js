@@ -25,10 +25,6 @@ const getAllBikes = asyncHandler(async (req, res) => {
   return res.status(200).json(new ApiResponse(200, bikes, "Bikes fetched successfully"));
 });
 
-
-
-
-
 const getBikeById = asyncHandler(async (req, res) => {
   const bike = await Bike.findById(req.params.id);
 
