@@ -106,7 +106,7 @@ const getBikes = asyncHandler(async (req, res) => {
     const bikes = await Bike.find(query).sort({ createdAt: -1 });
 
     return res.status(200).json(
-        new ApiResponse(200, bikes, "Cars fetched successfully")
+        new ApiResponse(200, bikes, "Bikes fetched successfully")
     );
 });
 
@@ -131,7 +131,7 @@ const getSingleBike = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(
-        new ApiResponse(200, bike, "BBike fetched successfully.")
+        new ApiResponse(200, bike, "Bike fetched successfully.")
     )
 });
 
