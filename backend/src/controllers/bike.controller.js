@@ -6,13 +6,52 @@ import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js
 
 
 
-const getAllBikes = asyncHandler(async (req, res) => {
-    const { brand_name, model, availability, minPrice, maxPrice } = req.query;
+const getBikes = asyncHandler(async (req, res) => {
+    const {
+        search,
+        brand,
+        model,
+        category,
+        minPrice,
+        maxPrice,
+        city
+    } = req.query;
 
-    const query = {};
+    const query = { availability: true };
+
+    if (search) {
+        const lowerSearch = search.toLowerCase();
+
+        if (lowerSearch.includes("commuter")) {
+            query.category = "Commuter"
+        };
+
+        if (lowerSearch.includes("Sport")) {
+            query.category = "Sport"
+        };
+
+        if (lowerSearch.includes("Cruiser")) {
+            query.category = "Cruiser"
+        };
+
+        if (lowerSearch.includes("Scooty")) {
+            query.category = "Scooty"
+        };
+
+        query.$or = [
+            { brand_name: { $regex: search, $options: "i" } },
+            { model: { $regex: search, $options: "i" } },
+            { category: { $regex: search, $options: "i" } }
+        ];
+    }
+
 
     if (brand_name) {
-        query.brand_name = brand_name
+        query.brand_name = brand
+    };
+
+    if (category) {
+        query.category = category
     };
 
     if (model) {
@@ -23,19 +62,77 @@ const getAllBikes = asyncHandler(async (req, res) => {
         query.availability = availability === "true"
     };
 
+    if (city) {
+        query.city = city
+    };
+
     if (minPrice || maxPrice) {
         query.price = {};
         if (minPrice) query.price.$gte = Number(minPrice);
         if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
+    if (req.user?.city && !city) {
+        query.city = req.user.city;
+    }
+
+    const noFilters =
+        !search &&
+        !brand &&
+        !model &&
+        !category &&
+        !minPrice &&
+        !maxPrice &&
+        !city;
+
+    if (noFilters) {
+        const categories = await Bike.distinct("category");
+        const groupedBikes = {};
+
+        for (const cat of categories) {
+            groupedBikes[cat] = await Bike.find({
+                category: cat,
+                availability: true
+            })
+                .sort({ createdAt: -1 })
+                .limit(10);
+        }
+
+        return res.status(200).json(
+            new ApiResponse(200, groupedBikes, "Bikes grouped by category")
+        );
+    }
+
     const bikes = await Bike.find(query).sort({ createdAt: -1 });
+
+    return res.status(200).json(
+        new ApiResponse(200, bikes, "Cars fetched successfully")
+    );
+});
+
+const getSingleBike = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    let bike;
+
+    if(!req.user){
+        bike = await Bike.findById(id).select(
+            "-registrationNumber"
+        )
+    }else{
+        bike = await Bike.findById(id)
+    }
+    
+
+    if(!bike){
+        throw new ApiError(404, "Bike not found")
+    }
 
     return res
     .status(200)
     .json(
-        new ApiResponse(200, bikes, "Bikes fetched successfully")
-    );
+        new ApiResponse(200, bike, "BBike fetched successfully.")
+    )
 });
 
 const addBike = asyncHandler(async (req, res) => {
@@ -90,10 +187,10 @@ const addBike = asyncHandler(async (req, res) => {
     });
 
     return res
-    .status(201)
-    .json(
-        new ApiResponse(201, newCar, "New bike added successfully")
-    );
+        .status(201)
+        .json(
+            new ApiResponse(201, newCar, "New bike added successfully")
+        );
 });
 
 const deleteBike = asyncHandler(async (req, res) => {
@@ -119,14 +216,15 @@ const deleteBike = asyncHandler(async (req, res) => {
     await Bike.deleteOne({ registrationNumber });
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, null, "Bike deleted successfully")
-    );
+        .status(200)
+        .json(
+            new ApiResponse(200, null, "Bike deleted successfully")
+        );
 });
 
 export {
     deleteBike,
     addBike,
-    getAllBikes
+    getBikes,
+    getSingleBike
 }

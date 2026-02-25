@@ -15,9 +15,13 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 import userRouter from "../src/routes/user.routes.js";
+import carRouter from "../src/routes/car.routes.js"
+import bikeRouter from "../src/routes/bike.routes.js"
 
 app.use("/api/users", userRouter)
 
-app.use("/api/cars", userRouter)
+app.use("/api/cars", carRouter)
+
+app.use("/api/bikes", bikeRouter)
 
 export default app;

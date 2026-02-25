@@ -111,6 +111,31 @@ const getCars = asyncHandler(async (req, res) => {
     );
 });
 
+const getSingleCar = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    let car;
+
+    if(!req.user){
+        car = await Car.findById(id).select(
+            "-registrationNumber"
+        )
+    }else{
+        car = await Car.findById(id)
+    }
+    
+
+    if(!car){
+        throw new ApiError(404, "Car not found")
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, car, "Car fetched successfully.")
+    )
+});
+
 const addCar = asyncHandler(async (req, res) => {
 
     if (!req.user.admin) {
@@ -175,9 +200,9 @@ const deleteCar = asyncHandler(async (req, res) => {
         throw new ApiError(403, "Only admins can delete cars");
     }
 
-    const { registrationNumber } = req.params;
+    const { id } = req.params;
 
-    const car = await Car.findOne({ registrationNumber });
+    const car = await Car.findById(id);
 
     if (!car) {
         throw new ApiError(404, "Car not found");
@@ -189,7 +214,7 @@ const deleteCar = asyncHandler(async (req, res) => {
         await deleteFromCloudinary(publicIds);
     }
 
-    await Car.deleteOne({ registrationNumber });
+    await Car.findByIdAndDelete(id);
 
     return res
         .status(200)
@@ -204,5 +229,6 @@ const deleteCar = asyncHandler(async (req, res) => {
 export {
     addCar,
     deleteCar,
-    getCars
+    getCars,
+    getSingleCar
 }

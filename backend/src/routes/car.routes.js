@@ -1,13 +1,13 @@
 import express from 'express';
-import { addCar, deleteCar } from '../controllers/car.controller.js';
-import {verifyJWT} from '../middlewares/auth.middleware.js'
+import { addCar, deleteCar, getCars, getSingleCar } from '../controllers/car.controller.js';
+import {verifyJWT, optionalAuth} from '../middlewares/auth.middleware.js'
 import { upload } from '../middlewares/multer.middleware.js';
 
 
 const router = express.Router();
 
 
-router.route('/cars').post(
+router.route('/').post(
     verifyJWT,
     upload.fields([
         {
@@ -18,9 +18,15 @@ router.route('/cars').post(
     addCar
 )
 
-router.route('/cars').delete(
+router.route("/").get(optionalAuth, getCars);
+
+
+router.route('/:id').delete(
     verifyJWT,
     deleteCar
 )
+
+router.route("/:id").get(optionalAuth, getSingleCar);
+
 
 export default router;
