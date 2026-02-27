@@ -9,10 +9,8 @@ const Login = () => {
   const location = useLocation();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const from = location.state?.from || '/';
@@ -21,10 +19,12 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await login(formData);
+      await login({ email, password });
       navigate(from);
     } catch (error) {
       console.error('Login error:', error);
+      // toast is not imported here, but we can rely on AuthContext for toasts 
+      // where it's already configured to show errors if we update AuthContext
     } finally {
       setLoading(false);
     }
@@ -60,8 +60,8 @@ const Login = () => {
               <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="input-field pl-10"
                 placeholder="your@email.com"
                 required
@@ -76,8 +76,8 @@ const Login = () => {
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="input-field pl-10"
                 placeholder="••••••••"
                 required

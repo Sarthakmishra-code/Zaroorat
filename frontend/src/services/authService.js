@@ -2,7 +2,7 @@ import api from './api';
 
 const authService = {
   register: async (userData) => {
-    const response = await api.post('/auth/register', userData);
+    const response = await api.post('/users/register', userData);
     if (response.success && response.data.accessToken) {
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -11,7 +11,7 @@ const authService = {
   },
 
   login: async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
+    const response = await api.post('/users/login', credentials);
     if (response.success && response.data.accessToken) {
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('user', JSON.stringify(response.data.user));
@@ -21,7 +21,7 @@ const authService = {
 
   logout: async () => {
     try {
-      await api.post('/auth/logout');
+      await api.post('/users/logout');
     } finally {
       localStorage.removeItem('accessToken');
       localStorage.removeItem('user');
@@ -34,12 +34,12 @@ const authService = {
   },
 
   getProfile: async () => {
-    const response = await api.get('/auth/profile');
+    const response = await api.get('/users/profile');
     return response;
   },
 
   updateProfile: async (userData) => {
-    const response = await api.put('/auth/profile', userData);
+    const response = await api.put('/users/profile', userData);
     if (response.success) {
       localStorage.setItem('user', JSON.stringify(response.data));
     }

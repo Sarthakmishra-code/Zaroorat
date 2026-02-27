@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, ShoppingCart, LayoutDashboard } from 'lucide-react';
+import { Menu, X, User, LogOut, ShoppingCart, LayoutDashboard, Compass } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import DarkModeToggle from './DarkModeToggle';
 
@@ -27,7 +27,7 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="sticky top-0 z-40 glass-card border-b border-gray-200 dark:border-dark-600"
+      className="sticky top-0 z-40 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 border-b border-transparent shadow-lg text-white"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
@@ -36,12 +36,12 @@ const Navbar = () => {
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
-              className="text-3xl"
+              className="text-white"
             >
-              🚗
+              <Compass className="h-8 w-8" />
             </motion.div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              RideRental
+            <span className="text-2xl font-bold tracking-tight text-white">
+              Zaroorat
             </span>
           </Link>
 
@@ -51,7 +51,7 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className="text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-medium"
+                className="text-white/90 hover:text-white transition-colors font-medium hover:underline decoration-2 underline-offset-4"
               >
                 {link.name}
               </Link>
@@ -67,7 +67,7 @@ const Navbar = () => {
                 {isAdmin && (
                   <Link
                     to="/admin"
-                    className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 hover:bg-purple-200 dark:hover:bg-purple-900/50 transition"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition"
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     <span>Admin</span>
@@ -76,7 +76,7 @@ const Navbar = () => {
 
                 <Link
                   to="/orders"
-                  className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition"
+                  className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition"
                 >
                   <ShoppingCart className="h-4 w-4" />
                   <span>Orders</span>
@@ -85,17 +85,17 @@ const Navbar = () => {
                 <div className="flex items-center space-x-3">
                   <Link
                     to="/profile"
-                    className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gray-100 dark:bg-dark-700 hover:bg-gray-200 dark:hover:bg-dark-600 transition"
+                    className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-white text-blue-600 hover:bg-gray-100 transition shadow-sm"
                   >
                     <User className="h-4 w-4" />
-                    <span className="text-sm font-medium">{user?.fullname}</span>
+                    <span className="text-sm font-bold">{user?.fullname}</span>
                   </Link>
 
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleLogout}
-                    className="p-2 rounded-xl bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/50 transition"
+                    className="p-2 rounded-xl bg-white/20 hover:bg-red-500 hover:text-white transition"
                   >
                     <LogOut className="h-5 w-5" />
                   </motion.button>
@@ -104,7 +104,7 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/login"
-                className="btn-primary"
+                className="px-6 py-2 rounded-xl bg-white text-blue-600 font-bold hover:bg-gray-100 transition shadow-md"
               >
                 Login
               </Link>

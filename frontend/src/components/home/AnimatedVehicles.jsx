@@ -1,79 +1,74 @@
 import { motion } from 'framer-motion';
-import { useInView } from 'react-intersection-observer';
 
 const AnimatedVehicles = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+  const categories = [
+    {
+      title: 'Bikes',
+      image: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300&h=300&fit=crop',
+      color: 'from-blue-900/80',
+      delay: 0.2
+    },
+    {
+      title: 'Hostels',
+      image: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=300&h=300&fit=crop',
+      color: 'from-purple-900/80',
+      delay: 0.4,
+      featured: true
+    },
+    {
+      title: 'Cars',
+      image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=300&h=300&fit=crop',
+      color: 'from-green-900/80',
+      delay: 0.6
+    }
+  ];
 
   return (
-    <div ref={ref} className="relative h-96 overflow-hidden">
-      {/* Bike from Left */}
-      <motion.div
-        initial={{ x: -300, opacity: 0 }}
-        animate={inView ? { x: 0, opacity: 1 } : {}}
-        transition={{ duration: 1, delay: 0.2 }}
-        className="absolute left-0 top-1/4"
-      >
-        <div className="text-8xl transform hover:scale-110 transition-transform cursor-pointer">
-          🏍️
-        </div>
-        <p className="text-center mt-2 font-bold text-blue-600 dark:text-blue-400">Bikes</p>
-      </motion.div>
+    <div className="relative mt-16 mb-12">
+      <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8">
+        {categories.map((item) => (
+          <motion.div
+            key={item.title}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: item.delay, ease: "easeOut" }}
+            className={`relative group ${item.featured ? 'z-10 md:-mt-8' : 'z-0'}`}
+          >
+            <div
+              className={`
+                rounded-2xl overflow-hidden shadow-2xl transition-all duration-300
+                ${item.featured ? 'w-64 h-64 md:w-72 md:h-72 ring-4 ring-white/20' : 'w-48 h-48 md:w-56 md:h-56'}
+                hover:-translate-y-2 hover:shadow-xl cursor-pointer
+              `}
+            >
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className={`absolute inset-0 bg-gradient-to-t ${item.color} to-transparent flex items-end p-6`}>
+                <p className={`text-white font-bold ${item.featured ? 'text-3xl' : 'text-xl'}`}>
+                  {item.title}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
 
-      {/* Car from Right */}
+      {/* Decorative Clouds */}
       <motion.div
-        initial={{ x: 300, opacity: 0 }}
-        animate={inView ? { x: 0, opacity: 1 } : {}}
-        transition={{ duration: 1, delay: 0.2 }}
-        className="absolute right-0 top-1/4"
-      >
-        <div className="text-8xl transform hover:scale-110 transition-transform cursor-pointer">
-          🚗
-        </div>
-        <p className="text-center mt-2 font-bold text-green-600 dark:text-green-400">Cars</p>
-      </motion.div>
-
-      {/* Hostel in Center */}
-      <motion.div
-        initial={{ scale: 0, opacity: 0 }}
-        animate={inView ? { scale: 1, opacity: 1 } : {}}
-        transition={{ duration: 0.8, delay: 0.8 }}
-        className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2"
-      >
-        <div className="text-9xl transform hover:scale-110 transition-transform cursor-pointer">
-          🏠
-        </div>
-        <p className="text-center mt-2 font-bold text-purple-600 dark:text-purple-400">Hostels</p>
-      </motion.div>
-
-      {/* Decorative Elements */}
-      <motion.div
-        animate={{
-          y: [0, -20, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-        className="absolute top-10 left-1/4 text-4xl opacity-20"
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -top-10 left-10 md:left-1/4 text-6xl opacity-10 dark:opacity-5 pointer-events-none"
       >
         ☁️
       </motion.div>
 
       <motion.div
-        animate={{
-          y: [0, -15, 0],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: 'easeInOut',
-          delay: 1,
-        }}
-        className="absolute top-20 right-1/4 text-4xl opacity-20"
+        animate={{ y: [0, -15, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute -top-4 right-10 md:right-1/4 text-5xl opacity-10 dark:opacity-5 pointer-events-none"
       >
         ☁️
       </motion.div>

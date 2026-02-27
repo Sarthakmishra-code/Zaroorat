@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle, Clock, Shield } from 'lucide-react';
-import AnimatedVehicles from '../components/home/AnimatedVehicles';
+import { ArrowRight, CheckCircle, Clock, Shield, Search, Calendar, MapPin, List } from 'lucide-react';
 import CitySelector from '../components/home/CitySelector';
 import BikeCard from '../components/cards/BikeCard';
 import CarCard from '../components/cards/CarCard';
@@ -11,10 +10,17 @@ import Loader from '../components/common/Loader';
 import vehicleService from '../services/vehicleService';
 
 const Home = () => {
+  const navigate = useNavigate();
   const [bikes, setBikes] = useState([]);
   const [cars, setCars] = useState([]);
   const [hostels, setHostels] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Search Bar State
+  const [searchLocation, setSearchLocation] = useState('');
+  const [searchService, setSearchService] = useState('bikes');
+  const [pickupDate, setPickupDate] = useState('');
+  const [dropoffDate, setDropoffDate] = useState('');
 
   useEffect(() => {
     fetchData();
@@ -38,31 +44,113 @@ const Home = () => {
     }
   };
 
-  if (loading) return <Loader fullScreen />;
+  const handleSearchClick = () => {
+    // Navigate to the selected service page
+    // Optional: Pass location and dates as URL query parameters so the target page can pre-filter
+    const queryParams = new URLSearchParams();
+    if (searchLocation) queryParams.append('location', searchLocation);
+    if (pickupDate) queryParams.append('pickupDate', pickupDate);
+    if (dropoffDate) queryParams.append('dropoffDate', dropoffDate);
+
+    navigate(`/${searchService}?${queryParams.toString()}`);
+  };
+
+  // Removed the full screen loader so the Hero section always loads instantly
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-dark-900 dark:via-dark-800 dark:to-dark-900 py-20">
-        <div className="max-w-7xl mx-auto px-4">
+      {/* Professional Hero Section with Search Bar */}
+      <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+        {/* Background Image with Dark Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920&q=80"
+            alt="Person driving on scenic road"
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gray-900/60 mix-blend-multiply"></div>
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 flex flex-col items-center text-center mt-[-10vh]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            transition={{ duration: 0.8 }}
+            className="mb-10 text-white"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Your Journey Starts Here
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-lg">
+              Find Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Perfect Ride</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8">
-              Rent Bikes, Cars & Find Hostels in 8+ Cities Across India
+            <p className="text-xl md:text-2xl text-gray-200 mb-8 font-light drop-shadow-md max-w-3xl mx-auto">
+              Premium bikes, cars, and stays across 8+ cities in India. Book instantly with Zaroorat.
             </p>
-            <Link to="/bikes" className="btn-primary inline-flex items-center gap-2">
-              Explore Now <ArrowRight className="h-5 w-5" />
-            </Link>
           </motion.div>
 
-          {/* Animated Vehicles */}
-          <AnimatedVehicles />
+          {/* Semantic Search Bar */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full max-w-4xl bg-white dark:bg-dark-800 rounded-2xl shadow-2xl p-2 md:p-4 flex flex-col md:flex-row gap-4 items-center"
+          >
+            {/* Service Selection */}
+            <div className="flex-1 flex items-center w-full bg-gray-50 dark:bg-dark-700 px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-600 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+              <List className="text-gray-400 mr-3 h-5 w-5" />
+              <select
+                value={searchService}
+                onChange={(e) => setSearchService(e.target.value)}
+                className="w-full bg-transparent border-none outline-none text-gray-800 dark:text-gray-200 cursor-pointer appearance-none"
+              >
+                <option value="bikes">Bikes</option>
+                <option value="cars">Cars</option>
+                <option value="hostels">Hostels</option>
+              </select>
+            </div>
+
+            {/* Location Input */}
+            <div className="flex-1 flex items-center w-full bg-gray-50 dark:bg-dark-700 px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-600 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+              <MapPin className="text-gray-400 mr-3 h-5 w-5" />
+              <input
+                type="text"
+                value={searchLocation}
+                onChange={(e) => setSearchLocation(e.target.value)}
+                placeholder="Where are you going?"
+                className="w-full bg-transparent border-none outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500"
+              />
+            </div>
+
+            {/* Dates Input */}
+            <div className="flex-1 flex items-center w-full bg-gray-50 dark:bg-dark-700 px-4 py-3 rounded-xl border border-gray-200 dark:border-dark-600 focus-within:ring-2 focus-within:ring-blue-500 transition-all">
+              <Calendar className="text-gray-400 mr-3 h-5 w-5" />
+              <div className="flex items-center w-full gap-2">
+                <input
+                  type="text"
+                  placeholder="Pickup"
+                  className="w-full bg-transparent border-none outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 text-sm"
+                  onFocus={(e) => e.target.type = 'date'}
+                  onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                />
+                <span className="text-gray-300">|</span>
+                <input
+                  type="text"
+                  placeholder="Dropoff"
+                  className="w-full bg-transparent border-none outline-none text-gray-800 dark:text-gray-200 placeholder-gray-500 text-sm"
+                  onFocus={(e) => e.target.type = 'date'}
+                  onBlur={(e) => { if (!e.target.value) e.target.type = 'text'; }}
+                />
+              </div>
+            </div>
+
+            {/* Search Button */}
+            <button
+              onClick={handleSearchClick}
+              className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-transform active:scale-95 shadow-lg"
+            >
+              <Search className="h-5 w-5" />
+              <span>Search</span>
+            </button>
+          </motion.div>
         </div>
       </section>
 
@@ -107,9 +195,13 @@ const Home = () => {
           </Link>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {bikes.map((bike, i) => (
-            <BikeCard key={bike._id} bike={bike} index={i} />
-          ))}
+          {loading ? (
+            <div className="col-span-3 flex justify-center py-12"><Loader /></div>
+          ) : (
+            bikes.map((bike, i) => (
+              <BikeCard key={bike._id} bike={bike} index={i} />
+            ))
+          )}
         </div>
       </section>
 
@@ -123,9 +215,13 @@ const Home = () => {
             </Link>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {cars.map((car, i) => (
-              <CarCard key={car._id} car={car} index={i} />
-            ))}
+            {loading ? (
+              <div className="col-span-3 flex justify-center py-12"><Loader /></div>
+            ) : (
+              cars.map((car, i) => (
+                <CarCard key={car._id} car={car} index={i} />
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -139,9 +235,13 @@ const Home = () => {
           </Link>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
-          {hostels.map((hostel, i) => (
-            <HostelCard key={hostel._id} hostel={hostel} index={i} />
-          ))}
+          {loading ? (
+            <div className="col-span-3 flex justify-center py-12"><Loader /></div>
+          ) : (
+            hostels.map((hostel, i) => (
+              <HostelCard key={hostel._id} hostel={hostel} index={i} />
+            ))
+          )}
         </div>
       </section>
     </div>
