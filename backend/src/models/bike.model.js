@@ -2,15 +2,20 @@ import mongoose from "mongoose";
 
 const bikeSchema = new mongoose.Schema(
   {
-    bikeId: {
-      type: String,
-      unique: true,
-      required: true,
-    },
+    // bikeId: {
+    //   type: String,
+    //   unique: true,
+    //   required: true,
+    // },
 
     name: {
       type: String,
       required: true,
+      trim: true,
+    },
+
+    description: {
+      type: String,
       trim: true,
     },
 
@@ -26,9 +31,9 @@ const bikeSchema = new mongoose.Schema(
       trim: true,
     },
 
-    description: {
+    category: {
       type: String,
-      trim: true,
+      required: true
     },
 
     engine_CC: {
@@ -60,6 +65,11 @@ const bikeSchema = new mongoose.Schema(
       type: String,
       unique: true,
       trim: true,
+    },
+
+    city: {
+      type: String,
+      required: true
     },
 
     images: [

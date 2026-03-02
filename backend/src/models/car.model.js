@@ -19,7 +19,7 @@ const carSchema = new mongoose.Schema(
       trim: true,
     },
 
-    brand: {
+    brand_name: {
       type: String,
       required: true,
       trim: true,
@@ -31,13 +31,14 @@ const carSchema = new mongoose.Schema(
       trim: true,
     },
 
+    category: {
+      type: String,
+      required: true
+    },
+
     seatingCapacity: {
       type: Number,
       required: true,
-    },
-
-    mileage: {
-      type: String, 
     },
 
     kmRun: {
@@ -45,20 +46,30 @@ const carSchema = new mongoose.Schema(
       default: 0,
     },
 
+    mileage: {
+      type: String, 
+    },
+
     price: {
       type: Number,
       required: true,
       min: 0,
     },
+
+    availability: {
+      type: Boolean,
+      default: true,
+    },
+
     registrationNumber: {
       type: String,
       unique: true,
       trim: true,
     },
 
-    availability: {
-      type: Boolean,
-      default: true,
+    city: {
+      type: String,
+      required: true
     },
 
     images: [
