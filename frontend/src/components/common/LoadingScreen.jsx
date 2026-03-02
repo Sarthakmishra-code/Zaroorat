@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Compass } from 'lucide-react';
 
 const LoadingScreen = ({ onComplete }) => {
   const [progress, setProgress] = useState(0);
@@ -31,12 +32,12 @@ const LoadingScreen = ({ onComplete }) => {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="mb-8"
+          className="mb-8 flex flex-col items-center"
         >
-          <div className="text-8xl font-bold text-white mb-4">
-            🚗 🏍️ 🏠
+          <div className="text-white mb-4">
+            <Compass className="w-24 h-24" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">RideRental</h1>
+          <h1 className="text-4xl font-bold text-white mb-2">Zaroorat</h1>
           <p className="text-white/80 text-lg">Your Journey Starts Here</p>
         </motion.div>
 

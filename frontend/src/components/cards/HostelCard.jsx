@@ -12,15 +12,16 @@ const HostelCard = ({ hostel, index }) => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
       whileHover={{ y: -5 }}
-      className="card group cursor-pointer"
+      className="card group cursor-pointer bg-white dark:bg-dark-800"
       onClick={() => navigate(`/hostels/${hostel._id}`)}
     >
       {/* Image */}
-      <div className="relative h-48 mb-4 rounded-xl overflow-hidden">
+      <div className="relative h-48 mb-4 rounded-xl overflow-hidden bg-gray-100 dark:bg-dark-700">
         <img
-          src={hostel.images?.[0]?.url || 'https://via.placeholder.com/400x300?text=Hostel'}
+          src={hostel.images?.[0]?.url || 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop'}
           alt={hostel.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop'; }}
         />
         {hostel.availability ? (
           <div className="absolute top-3 right-3 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
@@ -59,12 +60,12 @@ const HostelCard = ({ hostel, index }) => {
           </div>
           <div className="flex items-center gap-1">
             <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-            <span>4.3</span>
+            <span>4.3 <span className="text-gray-400 text-xs">(45 reviews)</span></span>
           </div>
         </div>
 
         {/* Price & Button */}
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mt-auto">
           <div>
             <span className="text-2xl font-bold text-purple-600 dark:text-purple-400">
               {formatCurrency(hostel.price)}

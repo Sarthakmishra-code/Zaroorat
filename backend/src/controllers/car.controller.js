@@ -1,8 +1,8 @@
-import {Car} from '../models/car.model.js'
-import ApiError from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { uploadOnCloudinary } from "../utils/cloudinary";
+import { Car } from '../models/car.model.js'
+import ApiError from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const addCar = asyncHandler(async (req, res) => {
 
@@ -90,7 +90,7 @@ const deleteCar = asyncHandler(async (req, res) => {
 
 
 
-export{
+export {
     addCar,
     deleteCar
 }

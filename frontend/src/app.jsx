@@ -17,7 +17,11 @@ import Footer from './components/common/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-// Add more page imports as needed
+import Bikes from './pages/Bikes';
+import Cars from './pages/Cars';
+import Hostels from './pages/Hostels';
+import Orders from './pages/Orders';
+import Profile from './pages/Profile';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -29,15 +33,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppContent() {
-  const [showLoading, setShowLoading] = useState(true);
-
-  useEffect(() => {
-    // Check if it's first visit
-    const hasVisited = sessionStorage.getItem('hasVisited');
-    if (hasVisited) {
-      setShowLoading(false);
-    }
-  }, []);
+  const [showLoading, setShowLoading] = useState(() => !sessionStorage.getItem('hasVisited'));
 
   const handleLoadingComplete = () => {
     sessionStorage.setItem('hasVisited', 'true');
@@ -58,18 +54,47 @@ function AppContent() {
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
-                {/* Add more routes */}
-                {/* <Route path="/bikes" element={<Bikes />} /> */}
-                {/* <Route path="/cars" element={<Cars />} /> */}
-                {/* <Route path="/hostels" element={<Hostels />} /> */}
+                <Route path="/bikes" element={<Bikes />} />
+                <Route path="/cars" element={<Cars />} />
+                <Route path="/hostels" element={<Hostels />} />
 
                 {/* Protected Routes */}
-                {/* <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} /> */}
-                {/* <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} /> */}
+                <Route
+                  path="/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
 
-                {/* 404 */}
-                <Route path="*" element={<div className="text-center py-20">404 - Page Not Found</div>} />
+                {/* 404 Not Found */}
+                <Route
+                  path="*"
+                  element={
+                    <div className="min-h-screen flex items-center justify-center">
+                      <div className="text-center">
+                        <h1 className="text-6xl font-bold text-gray-800 dark:text-gray-200 mb-4">
+                          404
+                        </h1>
+                        <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                          Page not found
+                        </p>
+                        <a href="/" className="btn-primary">
+                          Go Home
+                        </a>
+                      </div>
+                    </div>
+                  }
+                />
               </Routes>
             </main>
             <Footer />
@@ -85,6 +110,8 @@ function AppContent() {
           style: {
             background: '#363636',
             color: '#fff',
+            borderRadius: '12px',
+            padding: '16px',
           },
           success: {
             iconTheme: {
@@ -117,3 +144,4 @@ function App() {
 }
 
 export default App;
+
