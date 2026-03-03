@@ -150,6 +150,20 @@ const Register = () => {
             </div>
           </div>
 
+          {/* Apply for Admin Checkbox */}
+          <div className="md:col-span-2 flex items-center gap-2 mt-2">
+            <input
+              type="checkbox"
+              id="applyForAdmin"
+              checked={formData.applyForAdmin || false}
+              onChange={(e) => setFormData({ ...formData, applyForAdmin: e.target.checked })}
+              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+            />
+            <label htmlFor="applyForAdmin" className="text-gray-700 dark:text-gray-300 font-medium cursor-pointer">
+              Apply for Admin Access (Requires Approval)
+            </label>
+          </div>
+
           {/* Submit */}
           <motion.button
             whileHover={{ scale: 1.02 }}

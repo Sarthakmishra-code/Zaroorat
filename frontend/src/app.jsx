@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AnimatePresence } from 'framer-motion';
 
@@ -7,6 +7,7 @@ import { AnimatePresence } from 'framer-motion';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { CartProvider } from './context/CartContext';
+import { AdminRoute } from './context/AdminRoute';
 
 // Components
 import LoadingScreen from './components/common/LoadingScreen';
@@ -23,6 +24,13 @@ import Hostels from './pages/Hostels';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
 
+// Admin Pages
+import AdminLayout from './pages/admin/AdminLayout';
+import Dashboard from './pages/admin/Dashboard';
+import AdminUsers from './pages/admin/Users';
+import AdminOrders from './pages/admin/Orders';
+import AdminVehicles from './pages/admin/Vehicles';
+
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -30,6 +38,19 @@ const ProtectedRoute = ({ children }) => {
   if (loading) return null;
 
   return isAuthenticated ? children : <Navigate to="/login" replace />;
+};
+
+// Main layout block for the website (Navbar + Content + Footer)
+const MainLayout = () => {
+  return (
+    <>
+      <Navbar />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
 };
 
 function AppContent() {
@@ -47,9 +68,9 @@ function AppContent() {
           <LoadingScreen key="loading" onComplete={handleLoadingComplete} />
         ) : (
           <div key="app" className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">
-              <Routes>
+            <Routes>
+              {/* Main App Layout */}
+              <Route element={<MainLayout />}>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -76,7 +97,7 @@ function AppContent() {
                   }
                 />
 
-                {/* 404 Not Found */}
+                {/* 404 Not Found within standard layout */}
                 <Route
                   path="*"
                   element={
@@ -95,9 +116,23 @@ function AppContent() {
                     </div>
                   }
                 />
-              </Routes>
-            </main>
-            <Footer />
+              </Route> {/* End MainLayout */}
+
+              {/* Admin Routes (Uses its own Layout, outside MainLayout) */}
+              <Route
+                path="/admin/*"
+                element={
+                  <AdminRoute>
+                    <AdminLayout />
+                  </AdminRoute>
+                }
+              >
+                <Route index element={<Dashboard />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="orders" element={<AdminOrders />} />
+                <Route path="vehicles" element={<AdminVehicles />} />
+              </Route>
+            </Routes>
           </div>
         )}
       </AnimatePresence>

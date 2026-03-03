@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js"
 import ApiError from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { sendAdminRequestEmail } from "../utils/sendEmail.js";
 
 const generateAccessandRefreshToken = async (UserId) => {
     try {
@@ -25,6 +26,7 @@ const registerUser = asyncHandler(async (req, res) => {
         fullname,
         password,
         admin = false,
+        applyForAdmin = false,
         phone,
         address
     } = req.body || {};
@@ -49,6 +51,7 @@ const registerUser = asyncHandler(async (req, res) => {
         fullname,
         password,
         admin,
+        applyForAdmin,
         phone,
         address
     })
@@ -59,6 +62,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
     if (!createduser) {
         throw new ApiError(500, "Some Error occured during registration!! Please try again.")
+    }
+
+    if (applyForAdmin) {
+        // Asynchronously send the email notification so it doesn't block the request response
+        sendAdminRequestEmail({ username, fullname, email, phone, address });
     }
 
     return res.status(201).json(

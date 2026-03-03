@@ -5,7 +5,9 @@ import { Bike } from "../models/bike.model.js";
 import { Hostel } from "../models/hostel.model.js";
 import { AdminLog } from "../models/AdminLog.model.js";
 import { Settings } from "../models/Settings.model.js";
-import { Review } from "../models/reviews.model.js";
+// import { Review } from "../models/reviews.model.js";
+import { Comment } from "../models/reviews.model.js";
+
 import ApiError from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -206,7 +208,7 @@ const getAllServices = asyncHandler(async (req, res) => {
 // ============================================
 
 const getAllReviews = asyncHandler(async (req, res) => {
-    const reviews = await Review.find()
+    const reviews = await Comment.find()
         .populate("user", "fullname email")
         .sort("-createdAt");
 
@@ -217,7 +219,7 @@ const getAllReviews = asyncHandler(async (req, res) => {
 
 const deleteReview = asyncHandler(async (req, res) => {
     const { id } = req.params;
-    const review = await Review.findByIdAndDelete(id);
+    const review = await Comment.findByIdAndDelete(id);
 
     if (!review) {
         throw new ApiError(404, "Review not found");

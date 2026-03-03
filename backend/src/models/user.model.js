@@ -1,33 +1,38 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
 
 const userSchema = new Schema(
     {
-        admin : {
+        admin: {
             type: Boolean,
             default: false,
             required: true
         },
 
-        username : {
+        applyForAdmin: {
+            type: Boolean,
+            default: false
+        },
+
+        username: {
             type: String,
             required: true,
-            lowercase : true,
-            unique : true,
+            lowercase: true,
+            unique: true,
             trim: true
         },
-        
+
         email: {
             type: String,
             required: true,
             match: [/^\S+@\S+\.\S+$/, "Please enter a valid email id!"],
-            lowercase : true,
-            unique : true,
+            lowercase: true,
+            unique: true,
             trim: true
         },
 
-        fullname : {
+        fullname: {
             type: String,
             required: true,
         },
@@ -37,13 +42,13 @@ const userSchema = new Schema(
             required: true,
         },
 
-        phone : {
+        phone: {
             type: Number,
             required: true,
             unique: true,
             trim: true
         },
-        
+
         address: {
             type: String,
             required: true,
@@ -51,8 +56,8 @@ const userSchema = new Schema(
 
         orders: [
             {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Order",
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Order",
             },
         ],
 
@@ -61,12 +66,12 @@ const userSchema = new Schema(
         }
     },
     {
-    timestamps: true,
+        timestamps: true,
     }
 )
 
-userSchema.pre("save", async function (){
-    if(!this.isModified("password")) return;
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
     this.password = await bcrypt.hash(this.password, 10)
     // next();
 })
@@ -75,13 +80,13 @@ userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)
 }
 
-userSchema.methods.generateAccessToken = function(){
+userSchema.methods.generateAccessToken = function () {
     return jwt.sign(
         {
-            _id : this._id,
-            username : this.username,
-            email : this.email,
-            fullname : this.fullname
+            _id: this._id,
+            username: this.username,
+            email: this.email,
+            fullname: this.fullname
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
@@ -90,10 +95,10 @@ userSchema.methods.generateAccessToken = function(){
     )
 }
 
-userSchema.methods.generateRefreshToken = function(){
+userSchema.methods.generateRefreshToken = function () {
     return jwt.sign(
         {
-            _id : this._id,
+            _id: this._id,
         },
         process.env.REFRESH_TOKEN_SECRET,
         {
