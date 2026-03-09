@@ -13,7 +13,8 @@ const getBikes = asyncHandler(async (req, res) => {
         category,
         minPrice,
         maxPrice,
-        city
+        city,
+        limit
     } = req.query;
 
     const query = { availability: true };
@@ -71,34 +72,11 @@ const getBikes = asyncHandler(async (req, res) => {
         query.city = req.user.city;
     }
 
-    const noFilters =
-        !search &&
-        !brand &&
-        !model &&
-        !category &&
-        !minPrice &&
-        !maxPrice &&
-        !city;
-
-    if (noFilters) {
-        const categories = await Bike.distinct("category");
-        const groupedBikes = {};
-
-        for (const cat of categories) {
-            groupedBikes[cat] = await Bike.find({
-                category: cat,
-                availability: true
-            })
-                .sort({ createdAt: -1 })
-                .limit(10);
-        }
-
-        return res.status(200).json(
-            new ApiResponse(200, groupedBikes, "Bikes grouped by category")
-        );
+    let bikesQuery = Bike.find(query).sort({ createdAt: -1 });
+    if (limit) {
+        bikesQuery = bikesQuery.limit(parseInt(limit, 10));
     }
-
-    const bikes = await Bike.find(query).sort({ createdAt: -1 });
+    const bikes = await bikesQuery;
 
     return res.status(200).json(
         new ApiResponse(200, bikes, "Bikes fetched successfully")
@@ -137,12 +115,12 @@ const addBike = asyncHandler(async (req, res) => {
     }
 
     const {
-        name, description, brand, model,
+        name, description, brand_name, category, city, model,
         engine_CC, mileage, kmRun,
         price, registrationNumber, availability
     } = req.body;
 
-    if (!name || !brand || !model || !price || !registrationNumber) {
+    if (!name || !brand_name || !category || !city || !model || !price || !registrationNumber) {
         throw new ApiError(400, "Required fields missing");
     }
 
@@ -170,7 +148,9 @@ const addBike = asyncHandler(async (req, res) => {
     const newBike = await Bike.create({
         name,
         description,
-        brand,
+        brand_name,
+        category,
+        city,
         model,
         engine_CC,
         mileage,

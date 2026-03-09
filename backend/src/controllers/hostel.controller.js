@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const getAllHostels = asyncHandler(async (req, res) => {
-    const { name, roomCapacity, ac, availability, minPrice, maxPrice } = req.query;
+    const { name, roomCapacity, ac, availability, minPrice, maxPrice, limit } = req.query;
 
     const query = {};
 
@@ -31,7 +31,11 @@ const getAllHostels = asyncHandler(async (req, res) => {
         if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
-    const hostels = await Hostel.find(query).sort({ createdAt: -1 });
+    let hostelsQuery = Hostel.find(query).sort({ createdAt: -1 });
+    if (limit) {
+        hostelsQuery = hostelsQuery.limit(parseInt(limit, 10));
+    }
+    const hostels = await hostelsQuery;
 
     return res
         .status(200)
@@ -47,10 +51,10 @@ const addHostel = asyncHandler(async (req, res) => {
     }
 
     const {
-        hostelId, name, description, roomCapacity, ac, price, availability
+        hostelId, name, description, roomCapacity, ac, price, availability, city
     } = req.body;
 
-    if (!hostelId || !name || !roomCapacity || !ac || !price) {
+    if (!hostelId || !name || !city || !roomCapacity || !ac || !price) {
         throw new ApiError(400, "Required fields missing");
     }
 
@@ -83,6 +87,7 @@ const addHostel = asyncHandler(async (req, res) => {
         ac,
         price,
         availability,
+        city,
         images
     });
 
