@@ -1,11 +1,11 @@
-import {Hostel} from '../models/hostel.model.js'
-import ApiError from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary";
+import { Hostel } from '../models/hostel.model.js'
+import ApiError from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const getAllHostels = asyncHandler(async (req, res) => {
-    const { name, roomCapacity, ac, availability, minPrice, maxPrice } = req.query;
+    const { name, roomCapacity, ac, availability, minPrice, maxPrice, limit } = req.query;
 
     const query = {};
 
@@ -31,13 +31,17 @@ const getAllHostels = asyncHandler(async (req, res) => {
         if (maxPrice) query.price.$lte = Number(maxPrice);
     }
 
-    const hostels = await Hostel.find(query).sort({ createdAt: -1 });
+    let hostelsQuery = Hostel.find(query).sort({ createdAt: -1 });
+    if (limit) {
+        hostelsQuery = hostelsQuery.limit(parseInt(limit, 10));
+    }
+    const hostels = await hostelsQuery;
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, hostels, "Hostels fetched successfully")
-    );
+        .status(200)
+        .json(
+            new ApiResponse(200, hostels, "Hostels fetched successfully")
+        );
 });
 
 const addHostel = asyncHandler(async (req, res) => {
@@ -47,10 +51,10 @@ const addHostel = asyncHandler(async (req, res) => {
     }
 
     const {
-        hostelId, name, description, roomCapacity, ac, price, availability
+        hostelId, name, description, roomCapacity, ac, price, availability, city
     } = req.body;
 
-    if (!hostelId || !name || !roomCapacity || !ac || !price) {
+    if (!hostelId || !name || !city || !roomCapacity || !ac || !price) {
         throw new ApiError(400, "Required fields missing");
     }
 
@@ -75,7 +79,7 @@ const addHostel = asyncHandler(async (req, res) => {
         public_id: img.public_id
     }));
 
-    const newCar = await Car.create({
+    const newHostel = await Hostel.create({
         hostelId,
         name,
         description,
@@ -83,14 +87,15 @@ const addHostel = asyncHandler(async (req, res) => {
         ac,
         price,
         availability,
+        city,
         images
     });
 
     return res
-    .status(201)
-    .json(
-        new ApiResponse(201, newCar, "New car added successfully")
-    );
+        .status(201)
+        .json(
+            new ApiResponse(201, newHostel, "New hostel added successfully")
+        );
 });
 
 const deleteHostel = asyncHandler(async (req, res) => {
@@ -116,10 +121,10 @@ const deleteHostel = asyncHandler(async (req, res) => {
     await Hostel.deleteOne({ hostelId });
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, null, "Hostel deleted successfully")
-    );
+        .status(200)
+        .json(
+            new ApiResponse(200, null, "Hostel deleted successfully")
+        );
 });
 
 export {

@@ -1,5 +1,5 @@
 import express from 'express';
-import { addBike, deleteBike, getBikes, getSingleBike } from '../controllers/bike.controller.js';
+import { getAllHostels, addHostel, deleteHostel } from '../controllers/hostel.controller.js';
 import { verifyJWT, optionalAuth } from '../middlewares/auth.middleware.js'
 import { upload } from '../middlewares/multer.middleware.js';
 
@@ -11,22 +11,19 @@ router.route('/').post(
     verifyJWT,
     upload.fields([
         {
-            name: "BikeImage",
+            name: "HostelImage",
             maxCount: 10
         }
     ]),
-    addBike
+    addHostel
 )
 
-router.route("/").get(optionalAuth, getBikes);
+router.route("/").get(optionalAuth, getAllHostels);
 
 
-router.route('/:id').delete(
+router.route('/:hostelId').delete(
     verifyJWT,
-    deleteBike
+    deleteHostel
 )
-
-router.route("/:id").get(optionalAuth, getSingleBike);
-
 
 export default router;

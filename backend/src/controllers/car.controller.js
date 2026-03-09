@@ -1,8 +1,9 @@
 import { Car } from '../models/car.model.js'
-import ApiError from "../utils/ApiError";
-import { ApiResponse } from "../utils/ApiResponse";
-import { asyncHandler } from "../utils/asyncHandler";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary";
+import ApiError from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
+import fs from "fs";
 
 const getCars = asyncHandler(async (req, res) => {
     const {
@@ -13,7 +14,8 @@ const getCars = asyncHandler(async (req, res) => {
         seatingCapacity,
         minPrice,
         maxPrice,
-        city
+        city,
+        limit
     } = req.query;
 
     const query = { availability: true };
@@ -45,7 +47,7 @@ const getCars = asyncHandler(async (req, res) => {
             { category: { $regex: search, $options: "i" } }
         ];
     }
-    
+
     if (brand) {
         query.brand_name = brand
     };
@@ -76,35 +78,11 @@ const getCars = asyncHandler(async (req, res) => {
         query.city = req.user.city;
     }
 
-    const noFilters =
-        !search &&
-        !brand &&
-        !model &&
-        !category &&
-        !seatingCapacity &&
-        !minPrice &&
-        !maxPrice &&
-        !city;
-
-    if (noFilters) {
-        const categories = await Car.distinct("category");
-        const groupedCars = {};
-
-        for (const cat of categories) {
-            groupedCars[cat] = await Car.find({
-                category: cat,
-                availability: true
-            })
-                .sort({ createdAt: -1 })
-                .limit(10);
-        }
-
-        return res.status(200).json(
-            new ApiResponse(200, groupedCars, "Cars grouped by category")
-        );
+    let carsQuery = Car.find(query).sort({ createdAt: -1 });
+    if (limit) {
+        carsQuery = carsQuery.limit(parseInt(limit, 10));
     }
-
-    const cars = await Car.find(query).sort({ createdAt: -1 });
+    const cars = await carsQuery;
 
     return res.status(200).json(
         new ApiResponse(200, cars, "Cars fetched successfully")
@@ -116,24 +94,24 @@ const getSingleCar = asyncHandler(async (req, res) => {
 
     let car;
 
-    if(!req.user){
+    if (!req.user) {
         car = await Car.findById(id).select(
             "-registrationNumber"
         )
-    }else{
+    } else {
         car = await Car.findById(id)
     }
-    
 
-    if(!car){
+
+    if (!car) {
         throw new ApiError(404, "Car not found")
     }
 
     return res
-    .status(200)
-    .json(
-        new ApiResponse(200, car, "Car fetched successfully.")
-    )
+        .status(200)
+        .json(
+            new ApiResponse(200, car, "Car fetched successfully.")
+        )
 });
 
 const addCar = asyncHandler(async (req, res) => {
@@ -143,12 +121,12 @@ const addCar = asyncHandler(async (req, res) => {
     }
 
     const {
-        name, description, brand, model,
+        name, description, brand_name, category, city, model,
         seatingCapacity, mileage, kmRun,
         price, registrationNumber, availability
     } = req.body;
 
-    if (!name || !brand || !model || !price || !registrationNumber) {
+    if (!name || !brand_name || !category || !city || !model || !price || !registrationNumber) {
         throw new ApiError(400, "Required fields missing");
     }
 
@@ -176,7 +154,9 @@ const addCar = asyncHandler(async (req, res) => {
     const newCar = await Car.create({
         name,
         description,
-        brand,
+        brand_name,
+        category,
+        city,
         model,
         seatingCapacity,
         mileage,
