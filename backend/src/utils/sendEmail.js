@@ -42,3 +42,43 @@ export const sendAdminRequestEmail = async (userDetails) => {
         return false;
     }
 };
+
+// Function to generate a 6-digit OTP using Math.random
+export const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000);
+};
+
+// Function to send OTP via email
+export const sendOTPEmail = async (email, otp) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.OFFICIAL_EMAIL,
+                pass: process.env.OFFICIAL_EMAIL_PASSWORD
+            }
+        });
+
+        const mailOptions = {
+            from: process.env.OFFICIAL_EMAIL,
+            to: email,
+            subject: 'Your OTP for Zaroorat',
+            html: `
+                <h2>OTP Verification</h2>
+                <p>Your One-Time Password (OTP) for verification is:</p>
+                <h1 style="color: #333; font-size: 24px;">${otp}</h1>
+                <p>This OTP is valid for 10 minutes. Please do not share it with anyone.</p>
+                <p>If you did not request this, please ignore this email.</p>
+                <br />
+                <p>Zaroorat Team</p>
+            `
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        console.log('OTP email sent: ' + info.response);
+        return true;
+    } catch (error) {
+        console.error('Error sending OTP email:', error);
+        return false;
+    }
+};

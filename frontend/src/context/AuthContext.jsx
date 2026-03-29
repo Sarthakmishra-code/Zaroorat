@@ -32,6 +32,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const sendOTP = async (email) => {
+    try {
+      const response = await authService.sendOTP(email);
+      toast.success('OTP sent to your email! 📧');
+      return response;
+    } catch (error) {
+      toast.error(error.message || 'Failed to send OTP');
+      throw error;
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    try {
+      const response = await authService.verifyOTP(email, otp);
+      toast.success('OTP verified successfully! ✅');
+      return response;
+    } catch (error) {
+      toast.error(error.message || 'Invalid OTP');
+      throw error;
+    }
+  };
+
   const login = async (credentials) => {
     try {
       const response = await authService.login(credentials);
@@ -74,6 +96,8 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
         isAdmin: user?.admin || false,
         register,
+        sendOTP,
+        verifyOTP,
         login,
         logout,
         updateProfile,

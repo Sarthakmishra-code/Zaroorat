@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js"
 import ApiError from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-import { sendAdminRequestEmail } from "../utils/sendEmail.js";
+import { sendAdminRequestEmail, generateOTP, sendOTPEmail } from "../utils/sendEmail.js";
 
 const generateAccessandRefreshToken = async (UserId) => {
     try {
@@ -187,4 +187,66 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "Account details updated successfully"))
 })
 
-export { registerUser, loginUser, logoutUser, getCurrentUser, updateAccountDetails }
+const sendOTP = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    const otp = generateOTP();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    user.otp = otp;
+    user.otpExpiry = otpExpiry;
+    await user.save({ validateBeforeSave: false });
+
+    const emailSent = await sendOTPEmail(email, otp);
+
+    if (!emailSent) {
+        throw new ApiError(500, "Failed to send OTP email");
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "OTP sent successfully"));
+});
+
+const verifyOTP = asyncHandler(async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    if (user.otp !== otp) {
+        throw new ApiError(400, "Invalid OTP");
+    }
+
+    if (user.otpExpiry < new Date()) {
+        throw new ApiError(400, "OTP has expired");
+    }
+
+    // Clear OTP after verification
+    user.otp = undefined;
+    user.otpExpiry = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return res
+        .status(200)
+        .json(new ApiResponse(200, {}, "OTP verified successfully"));
+});
+
+export { registerUser, loginUser, logoutUser, getCurrentUser, updateAccountDetails, sendOTP, verifyOTP }
