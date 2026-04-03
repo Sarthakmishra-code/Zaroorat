@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { User, Mail, Lock, Phone, MapPin, UserPlus } from 'lucide-react';
+import { User, Mail, Lock, Phone, MapPin, UserPlus, Shield, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import toast from 'react-hot-toast';
@@ -30,6 +30,7 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState('');
 
+  const [step, setStep] = useState(1); // 1: Registration form, 2: OTP verification
   const [formData, setFormData] = useState({
     username: '',
     fullname: '',
@@ -37,10 +38,12 @@ const Register = () => {
     password: '',
     phone: '',
     address: '',
+    applyForAdmin: false,
   });
+  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSendOTP = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
@@ -52,10 +55,15 @@ const Register = () => {
         navigate('/');
       }
     } catch (error) {
-      console.error('Registration error:', error);
+      console.error('Verify OTP error:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleBackToForm = () => {
+    setStep(1);
+    setOtp('');
   };
 
   return (
@@ -242,6 +250,59 @@ const Register = () => {
             )}
           </motion.button>
         </form>
+        ) : (
+          /* OTP Verification Form */
+          <form onSubmit={handleVerifyOTP} className="space-y-6">
+            <div>
+              <label className="block text-sm font-medium mb-2">Enter OTP</label>
+              <div className="relative">
+                <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <input
+                  type="text"
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  className="input-field pl-10 text-center text-2xl tracking-widest"
+                  placeholder="000000"
+                  maxLength="6"
+                  required
+                />
+              </div>
+              <p className="text-sm text-gray-500 mt-2">
+                Enter the 6-digit code sent to your email
+              </p>
+            </div>
+
+            <div className="flex gap-4">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={handleBackToForm}
+                className="flex-1 btn-secondary flex items-center justify-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                disabled={loading || otp.length !== 6}
+                className="flex-1 btn-primary flex items-center justify-center gap-2"
+              >
+                {loading ? (
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                ) : (
+                  <>
+                    <UserPlus className="h-5 w-5" />
+                    Verify & Register
+                  </>
+                )}
+              </motion.button>
+            </div>
+          </form>
+        )}
 
         {step === 1 && (
           <>
@@ -284,6 +345,18 @@ const Register = () => {
             Login
           </Link>
         </p>
+        {step === 2 && (
+          <p className="mt-2 text-center text-sm text-gray-500">
+            Didn't receive OTP?{' '}
+            <button
+              onClick={() => sendOTP(formData.email)}
+              className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
+              disabled={loading}
+            >
+              Resend
+            </button>
+          </p>
+        )}
       </motion.div>
     </div>
   );
