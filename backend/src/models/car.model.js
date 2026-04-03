@@ -36,6 +36,14 @@ const carSchema = new mongoose.Schema(
       required: true
     },
 
+    fuelType: {
+      type: String,
+    },
+
+    transmission: {
+      type: String,
+    },
+
     seatingCapacity: {
       type: Number,
       required: true,

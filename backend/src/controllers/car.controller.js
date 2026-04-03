@@ -11,6 +11,8 @@ const getCars = asyncHandler(async (req, res) => {
         brand,
         model,
         category,
+        fuelType,
+        transmission,
         seatingCapacity,
         minPrice,
         maxPrice,
@@ -58,6 +60,14 @@ const getCars = asyncHandler(async (req, res) => {
 
     if (category) {
         query.category = category
+    };
+
+    if (fuelType) {
+        query.fuelType = fuelType
+    };
+
+    if (transmission) {
+        query.transmission = transmission
     };
 
     if (seatingCapacity) {
@@ -122,7 +132,7 @@ const addCar = asyncHandler(async (req, res) => {
 
     const {
         name, description, brand_name, category, city, model,
-        seatingCapacity, mileage, kmRun,
+        fuelType, transmission, seatingCapacity, mileage, kmRun,
         price, registrationNumber, availability
     } = req.body;
 
@@ -158,6 +168,8 @@ const addCar = asyncHandler(async (req, res) => {
         category,
         city,
         model,
+        fuelType,
+        transmission,
         seatingCapacity,
         mileage,
         kmRun,

@@ -4,19 +4,18 @@ import adminService from '../../services/adminService';
 import Loader from '../../components/common/Loader';
 import { formatCurrency } from '../../utils/helpers';
 import toast from 'react-hot-toast';
+import AddVehicleModal from '../../components/admin/AddVehicleModal';
 
 const Vehicles = () => {
     const [services, setServices] = useState({ cars: [], bikes: [], hostels: [] });
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('cars');
     const [searchTerm, setSearchTerm] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const fetchServices = async () => {
         try {
             setLoading(true);
-            // Currently the backend getAllServices doesn't take pagination or search, it returns all three
-            const response = await adminService.getDashboardStats(); // Temporary workaround: getDashboardStats might not have all vehicles
-            // Let's create a direct api call to the vehicleService since adminService doesn't export generic getCars
             const [carsRes, bikesRes] = await Promise.all([
                 fetch('http://localhost:8000/api/v1/cars').then(res => res.json()),
                 fetch('http://localhost:8000/api/v1/bikes').then(res => res.json())
@@ -41,16 +40,22 @@ const Vehicles = () => {
     const deleteVehicle = async (type, id) => {
         if (window.confirm(`Are you sure you want to delete this ${type}?`)) {
             try {
-                await fetch(`http://localhost:8000/api/v1/${type}s/${id}`, {
+                const response = await fetch(`http://localhost:8000/api/v1/${type}s/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     }
                 });
-                toast.success(`${type} deleted successfully`);
-                fetchServices();
+                
+                if (response.ok) {
+                    toast.success(`${type} deleted successfully`);
+                    fetchServices();
+                } else {
+                    const data = await response.json();
+                    throw new Error(data.message || 'Failed to delete');
+                }
             } catch (error) {
-                toast.error(`Failed to delete ${type}`);
+                toast.error(`Failed to delete ${type}: ${error.message}`);
             }
         }
     };
@@ -62,7 +67,7 @@ const Vehicles = () => {
     );
 
     return (
-        <div className="space-y-6 flex flex-col h-[calc(100vh-8rem)]">
+        <div className="space-y-6 flex flex-col h-[calc(100vh-8rem)] relative">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Vehicle Management</h1>
@@ -70,7 +75,6 @@ const Vehicles = () => {
                 </div>
 
                 <div className="flex items-center gap-4 w-full sm:w-auto">
-                    {/* Search */}
                     <div className="relative flex-1 sm:w-64">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <input
@@ -82,14 +86,13 @@ const Vehicles = () => {
                         />
                     </div>
 
-                    <button className="btn-primary flex items-center gap-2 py-2 shrink-0">
+                    <button onClick={() => setIsModalOpen(true)} className="btn-primary flex items-center gap-2 py-2 shrink-0">
                         <Plus className="h-4 w-4" />
                         Add {activeTab === 'cars' ? 'Car' : 'Bike'}
                     </button>
                 </div>
             </div>
 
-            {/* Tabs */}
             <div className="flex border-b border-gray-200 dark:border-dark-700 shrink-0">
                 <button
                     onClick={() => { setActiveTab('cars'); setSearchTerm(''); }}
@@ -191,6 +194,13 @@ const Vehicles = () => {
                     </table>
                 </div>
             </div>
+
+            <AddVehicleModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                type={activeTab}
+                onSuccess={fetchServices}
+            />
         </div>
     );
 };

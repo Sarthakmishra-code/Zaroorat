@@ -4,8 +4,7 @@ export const sendAdminRequestEmail = async (userDetails) => {
     try {
         const { username, fullname, email, phone, address } = userDetails;
 
-        // Configure the transporter. 
-        // Note: The user still needs to provide the real USER and PASS in .env
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -29,7 +28,10 @@ export const sendAdminRequestEmail = async (userDetails) => {
                     <tr><td style="padding: 8px; border: 1px solid #ddd;"><strong>Address:</strong></td><td style="padding: 8px; border: 1px solid #ddd;">${address}</td></tr>
                 </table>
                 <br />
-                <p>To approve this request, log in to your database or Admin Dashboard and change the <code>admin</code> boolean to <code>true</code> for this user.</p>
+                <p>To approve this request, click the button below:</p>
+                <a href="${process.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/users/approve-admin?email=${encodeURIComponent(email)}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Approve as Admin</a>
+                <br /><br />
+                <p>Alternatively, you can log in to your database and change the <code>admin</code> boolean to <code>true</code> for this user.</p>
                 <p>Zaroorat Team</p>
             `
         };
@@ -43,12 +45,6 @@ export const sendAdminRequestEmail = async (userDetails) => {
     }
 };
 
-// Function to generate a 6-digit OTP using Math.random
-export const generateOTP = () => {
-    return Math.floor(100000 + Math.random() * 900000);
-};
-
-// Function to send OTP via email
 export const sendOTPEmail = async (email, otp) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -61,14 +57,13 @@ export const sendOTPEmail = async (email, otp) => {
 
         const mailOptions = {
             from: process.env.OFFICIAL_EMAIL,
-            to: email,
-            subject: 'Your OTP for Zaroorat',
+            to: email, 
+            subject: `Your Zaroorat Registration OTP`,
             html: `
-                <h2>OTP Verification</h2>
-                <p>Your One-Time Password (OTP) for verification is:</p>
-                <h1 style="color: #333; font-size: 24px;">${otp}</h1>
-                <p>This OTP is valid for 10 minutes. Please do not share it with anyone.</p>
-                <p>If you did not request this, please ignore this email.</p>
+                <h2>Verify your Email</h2>
+                <p>Thank you for registering with Zaroorat! Your OTP for verification is:</p>
+                <h1 style="color: blue; letter-spacing: 5px;">${otp}</h1>
+                <p>This OTP will expire in 10 minutes.</p>
                 <br />
                 <p>Zaroorat Team</p>
             `

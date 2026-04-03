@@ -39,19 +39,32 @@ const userSchema = new Schema(
 
         password: {
             type: String,
-            required: true,
+            required: function() {
+                return this.authProvider === 'local';
+            }
         },
 
         phone: {
             type: Number,
-            required: true,
             unique: true,
+            sparse: true, // Handle null or missing values gracefully since it's unique
             trim: true
         },
 
         address: {
             type: String,
-            required: true,
+        },
+
+        googleId: {
+            type: String,
+            unique: true,
+            sparse: true
+        },
+
+        authProvider: {
+            type: String,
+            enum: ['local', 'google'],
+            default: 'local'
         },
 
         orders: [
@@ -79,10 +92,9 @@ const userSchema = new Schema(
 )
 
 userSchema.pre("save", async function () {
-    if (!this.isModified("password")) return;
-    this.password = await bcrypt.hash(this.password, 10)
-    // next();
-})
+    if (!this.isModified("password") || !this.password) return;
+    this.password = await bcrypt.hash(this.password, 10);
+});
 
 userSchema.methods.isPasswordCorrect = async function (password) {
     return await bcrypt.compare(password, this.password)

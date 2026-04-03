@@ -5,7 +5,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.js";
 
 const getAllHostels = asyncHandler(async (req, res) => {
-    const { name, roomCapacity, ac, availability, minPrice, maxPrice, limit } = req.query;
+    const { name, roomCapacity, minCapacity, ac, availability, minPrice, maxPrice, limit } = req.query;
 
     const query = {};
 
@@ -15,6 +15,8 @@ const getAllHostels = asyncHandler(async (req, res) => {
 
     if (roomCapacity) {
         query.roomCapacity = roomCapacity
+    } else if (minCapacity) {
+        query.roomCapacity = { $gte: Number(minCapacity) };
     };
 
     if (ac) {
