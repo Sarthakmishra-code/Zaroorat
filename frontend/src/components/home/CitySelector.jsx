@@ -4,44 +4,44 @@ import { useCart } from '../../context/CartContext';
 
 const CITIES = [
   {
-    name: 'Mumbai',
-    image: 'https://images.unsplash.com/photo-1567157577867-05ccb7957ef9?w=400&h=300&fit=crop',
-    description: 'Financial Capital'
+    name: 'Greater Noida',
+    image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400&h=300&fit=crop',
+    description: 'The Planned City'
   },
   {
-    name: 'Delhi',
+    name: 'Knowledge Park',
+    image: 'https://images.unsplash.com/photo-1562774053-701939374585?w=400&h=300&fit=crop',
+    description: 'Education Hub'
+  },
+  {
+    name: 'Pari Chowk',
+    image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400&h=300&fit=crop',
+    description: 'The Central Connect'
+  },
+  {
+    name: 'Alpha 1',
+    image: 'https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&h=300&fit=crop',
+    description: 'Prime Commercial'
+  },
+  {
+    name: 'Beta 2',
+    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?w=400&h=300&fit=crop',
+    description: 'Peaceful Residential'
+  },
+  {
+    name: 'Noida',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop',
+    description: 'IT & Business Hub'
+  },
+  {
+    name: 'Greater Noida West',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400&h=300&fit=crop',
+    description: 'Noida Extension'
+  },
+  {
+    name: 'New Delhi',
     image: 'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=400&h=300&fit=crop',
-    description: 'Heart of India'
-  },
-  {
-    name: 'Bangalore',
-    image: 'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?w=400&h=300&fit=crop',
-    description: 'Silicon Valley'
-  },
-  {
-    name: 'Hyderabad',
-    image: 'https://images.unsplash.com/photo-1603262110679-cc9bc042a4ce?w=400&h=300&fit=crop',
-    description: 'City of Pearls'
-  },
-  {
-    name: 'Chennai',
-    image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400&h=300&fit=crop',
-    description: 'Gateway to South'
-  },
-  {
-    name: 'Kolkata',
-    image: 'https://images.unsplash.com/photo-1558431382-27e303142255?w=400&h=300&fit=crop',
-    description: 'City of Joy'
-  },
-  {
-    name: 'Pune',
-    image: 'https://images.unsplash.com/photo-1595658658481-d53d3f999875?w=400&h=300&fit=crop',
-    description: 'Oxford of East'
-  },
-  {
-    name: 'Jaipur',
-    image: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?w=400&h=300&fit=crop',
-    description: 'Pink City'
+    description: 'The Capital'
   },
 ];
 
