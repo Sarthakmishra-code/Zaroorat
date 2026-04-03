@@ -23,11 +23,22 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await authService.register(userData);
-      setUser(response.data.user);
-      toast.success('Registration successful! Welcome aboard! 🎉');
+      toast.success('OTP sent to your email. Please verify. 📧');
       return response;
     } catch (error) {
       toast.error(error.message || 'Registration failed');
+      throw error;
+    }
+  };
+
+  const verifyOTP = async (email, otp) => {
+    try {
+      const response = await authService.verifyOTP(email, otp);
+      setUser(response.data.user || response.data);
+      toast.success('Registration and Verification successful! Welcome aboard! 🎉');
+      return response;
+    } catch (error) {
+      toast.error(error.message || 'OTP verification failed');
       throw error;
     }
   };
@@ -40,6 +51,18 @@ export const AuthProvider = ({ children }) => {
       return response;
     } catch (error) {
       toast.error(error.message || 'Login failed');
+      throw error;
+    }
+  };
+
+  const googleLogin = async (credential) => {
+    try {
+      const response = await authService.googleLogin(credential);
+      setUser(response.data.user);
+      toast.success(`Welcome back, ${response.data.user.fullname}! 👋`);
+      return response;
+    } catch (error) {
+      toast.error(error.message || 'Google Login failed');
       throw error;
     }
   };
@@ -74,7 +97,9 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: !!user,
         isAdmin: user?.admin || false,
         register,
+        verifyOTP,
         login,
+        googleLogin,
         logout,
         updateProfile,
       }}

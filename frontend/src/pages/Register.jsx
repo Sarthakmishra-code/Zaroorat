@@ -3,10 +3,32 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Phone, MapPin, UserPlus } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register } = useAuth();
+  const { register, verifyOTP, googleLogin } = useAuth();
+  
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      await googleLogin(credentialResponse.credential);
+      navigate('/');
+    } catch (error) {
+      console.error('Google login error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error('Google Login Failed');
+    console.error('Google Login Failed');
+  };
+
+  const [step, setStep] = useState(1);
+  const [otp, setOtp] = useState('');
 
   const [formData, setFormData] = useState({
     username: '',
@@ -22,8 +44,13 @@ const Register = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      await register(formData);
-      navigate('/');
+      if (step === 1) {
+        await register(formData);
+        setStep(2);
+      } else {
+        await verifyOTP(formData.email, otp);
+        navigate('/');
+      }
     } catch (error) {
       console.error('Registration error:', error);
     } finally {
@@ -46,14 +73,20 @@ const Register = () => {
             transition={{ type: 'spring', stiffness: 200 }}
             className="text-6xl mb-4"
           >
-            🎉
+            {step === 1 ? '🎉' : '📧'}
           </motion.div>
-          <h2 className="text-3xl font-bold mb-2">Create Account</h2>
-          <p className="text-gray-600 dark:text-gray-400">Join us and start your journey</p>
+          <h2 className="text-3xl font-bold mb-2">
+            {step === 1 ? 'Create Account' : 'Verify Email'}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            {step === 1 ? 'Join us and start your journey' : `Enter the 6-digit OTP sent to ${formData.email}`}
+          </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="grid md:grid-cols-2 gap-6">
+        <form onSubmit={handleSubmit} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
+          {step === 1 ? (
+             <>
           {/* Username */}
           <div>
             <label className="block text-sm font-medium mb-2">Username</label>
@@ -163,6 +196,24 @@ const Register = () => {
               Apply for Admin Access (Requires Approval)
             </label>
           </div>
+          </>
+          ) : (
+             <div>
+                <label className="block text-sm font-medium mb-2">Enter OTP</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    className="input-field pl-10 text-center tracking-[0.5em] text-xl font-bold"
+                    placeholder="------"
+                    maxLength={6}
+                    required
+                  />
+                </div>
+             </div>
+          )}
 
           {/* Submit */}
           <motion.button
@@ -170,18 +221,61 @@ const Register = () => {
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={loading}
-            className="md:col-span-2 btn-primary flex items-center justify-center gap-2"
+            className={`${step === 1 ? "md:col-span-2" : "w-full"} btn-primary flex items-center justify-center gap-2`}
           >
             {loading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
             ) : (
               <>
-                <UserPlus className="h-5 w-5" />
-                Create Account
+                {step === 1 ? (
+                  <>
+                    <UserPlus className="h-5 w-5" />
+                    Send OTP
+                  </>
+                ) : (
+                  <>
+                    <Lock className="h-5 w-5" />
+                    Verify && Create Account
+                  </>
+                )}
               </>
             )}
           </motion.button>
         </form>
+
+        {step === 1 && (
+          <>
+            <div className="mt-6 flex items-center justify-between">
+              <span className="border-b dark:border-gray-600 w-1/5 lg:w-1/4"></span>
+              <span className="text-xs text-center text-gray-500 uppercase dark:text-gray-400">or sign up with</span>
+              <span className="border-b dark:border-gray-600 w-1/5 lg:w-1/4"></span>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                theme="filled_blue"
+                shape="rectangular"
+                text="continue_with"
+              />
+            </div>
+          </>
+        )}
+
+        {/* Back Button for step 2 */}
+        {step === 2 && (
+           <p className="mt-4 text-center">
+              <button 
+                 type="button" 
+                 onClick={() => setStep(1)} 
+                 className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-sm underline"
+                 disabled={loading}
+              >
+                 Back to details
+              </button>
+           </p>
+        )}
 
         {/* Footer */}
         <p className="mt-6 text-center text-gray-600 dark:text-gray-400">

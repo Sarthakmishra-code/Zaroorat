@@ -88,3 +88,9 @@ dummy_bike.png
 dummy_car.png
 dummy_hostel.png
 
+out.json
+out.txt
+reset-db.js
+test-cloudinary-email.js
+test-mongo.js
+test-vehicles.js

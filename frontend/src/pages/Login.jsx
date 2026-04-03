@@ -3,11 +3,30 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      await googleLogin(credentialResponse.credential);
+      navigate(from);
+    } catch (error) {
+      console.error('Google login error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error('Google Login Failed');
+    console.error('Google Login Failed');
+  };
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -103,6 +122,22 @@ const Login = () => {
             )}
           </motion.button>
         </form>
+
+        <div className="mt-6 flex items-center justify-between">
+          <span className="border-b dark:border-gray-600 w-1/5 lg:w-1/4"></span>
+          <span className="text-xs text-center text-gray-500 uppercase dark:text-gray-400">or login with</span>
+          <span className="border-b dark:border-gray-600 w-1/5 lg:w-1/4"></span>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handleGoogleError}
+            theme="filled_blue"
+            shape="rectangular"
+            text="continue_with"
+          />
+        </div>
 
         {/* Footer */}
         <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
