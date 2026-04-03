@@ -22,6 +22,9 @@ import Register from './pages/Register';
 import Bikes from './pages/Bikes';
 import Cars from './pages/Cars';
 import Hostels from './pages/Hostels';
+import CarDetail from './pages/CarDetail';
+import BikeDetail from './pages/BikeDetail';
+import HostelDetail from './pages/HostelDetail';
 import Orders from './pages/Orders';
 import Profile from './pages/Profile';
 
@@ -77,8 +80,11 @@ function AppContent() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/bikes" element={<Bikes />} />
+                <Route path="/bikes/:id" element={<BikeDetail />} />
                 <Route path="/cars" element={<Cars />} />
+                <Route path="/cars/:id" element={<CarDetail />} />
                 <Route path="/hostels" element={<Hostels />} />
+                <Route path="/hostels/:id" element={<HostelDetail />} />
 
                 {/* Protected Routes */}
                 <Route
