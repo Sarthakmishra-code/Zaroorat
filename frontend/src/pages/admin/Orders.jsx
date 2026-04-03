@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package, Search, ChevronDown, CheckCircle, XCircle } from 'lucide-react';
+import { Package, Search, ChevronDown, CheckCircle, XCircle, Trash2 } from 'lucide-react';
 import adminService from '../../services/adminService';
 import Loader from '../../components/common/Loader';
 import { formatCurrency } from '../../utils/helpers';
@@ -51,6 +51,17 @@ const Orders = () => {
             fetchOrders();
         } catch (error) {
             toast.error('Failed to update order status');
+        }
+    };
+
+    const handleDeleteOrder = async (orderId) => {
+        if (!window.confirm('Are you sure you want to delete this order?')) return;
+        try {
+            await adminService.deleteOrder(orderId);
+            toast.success('Order deleted successfully');
+            fetchOrders();
+        } catch (error) {
+            toast.error('Failed to delete order');
         }
     };
 
@@ -161,6 +172,13 @@ const Orders = () => {
                                                     <option value="delivered">Delivered</option>
                                                     <option value="cancelled">Cancelled</option>
                                                 </select>
+                                                <button 
+                                                    onClick={() => handleDeleteOrder(order._id)}
+                                                    className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition"
+                                                    title="Delete Order"
+                                                >
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

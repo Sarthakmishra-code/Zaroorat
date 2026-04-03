@@ -21,7 +21,10 @@ const adminService = {
         return await api.get('/admin/orders', { params });
     },
     updateOrderStatus: async (orderId, data) => {
-        return await api.put(`/admin/orders/${orderId}`, data);
+        return await api.patch(`/admin/orders/${orderId}`, data);
+    },
+    deleteOrder: async (orderId) => {
+        return await api.delete(`/admin/orders/${orderId}`);
     },
 
     // Settings & Logs

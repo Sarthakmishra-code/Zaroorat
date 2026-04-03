@@ -27,8 +27,6 @@ const Register = () => {
     console.error('Google Login Failed');
   };
 
-  const [step, setStep] = useState(1);
-  const [otp, setOtp] = useState('');
 
   const [step, setStep] = useState(1); // 1: Registration form, 2: OTP verification
   const [formData, setFormData] = useState({
@@ -92,7 +90,7 @@ const Register = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
+        <form onSubmit={handleSendOTP} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
           {step === 1 ? (
              <>
           {/* Username */}
@@ -250,60 +248,6 @@ const Register = () => {
             )}
           </motion.button>
         </form>
-        ) : (
-          /* OTP Verification Form */
-          <form onSubmit={handleVerifyOTP} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium mb-2">Enter OTP</label>
-              <div className="relative">
-                <Shield className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
-                  type="text"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className="input-field pl-10 text-center text-2xl tracking-widest"
-                  placeholder="000000"
-                  maxLength="6"
-                  required
-                />
-              </div>
-              <p className="text-sm text-gray-500 mt-2">
-                Enter the 6-digit code sent to your email
-              </p>
-            </div>
-
-            <div className="flex gap-4">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="button"
-                onClick={handleBackToForm}
-                className="flex-1 btn-secondary flex items-center justify-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading || otp.length !== 6}
-                className="flex-1 btn-primary flex items-center justify-center gap-2"
-              >
-                {loading ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                ) : (
-                  <>
-                    <UserPlus className="h-5 w-5" />
-                    Verify & Register
-                  </>
-                )}
-              </motion.button>
-            </div>
-          </form>
-        )}
-
         {step === 1 && (
           <>
             <div className="mt-6 flex items-center justify-between">

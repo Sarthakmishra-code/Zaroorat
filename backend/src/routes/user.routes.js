@@ -11,8 +11,6 @@ router.post('/google-login', googleLogin);
 router.post('/logout', verifyJWT, logoutUser);
 router.get('/approve-admin', approveAdmin);
 
-router.post('/send-otp', sendOTP);
-router.post('/verify-otp', verifyOTP);
 
 router.route("/profile").get(verifyJWT, getCurrentUser);
 router.route("/update-account").patch(verifyJWT, updateAccountDetails);

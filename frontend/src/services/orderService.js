@@ -6,7 +6,7 @@ const orderService = {
   },
 
   getMyOrders: async () => {
-    return await api.get('/orders/my-orders');
+    return await api.get('/orders');
   },
 
   getOrderById: async (id) => {
