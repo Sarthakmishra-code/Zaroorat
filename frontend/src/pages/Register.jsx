@@ -27,8 +27,9 @@ const Register = () => {
     console.error('Google Login Failed');
   };
 
+  const [step, setStep] = useState(1);
+  const [otp, setOtp] = useState('');
 
-  const [step, setStep] = useState(1); // 1: Registration form, 2: OTP verification
   const [formData, setFormData] = useState({
     username: '',
     fullname: '',
@@ -38,7 +39,6 @@ const Register = () => {
     address: '',
     applyForAdmin: false,
   });
-  const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSendOTP = async (e) => {
@@ -90,7 +90,7 @@ const Register = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSendOTP} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
+        <form onSubmit={handleSubmit} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
           {step === 1 ? (
              <>
           {/* Username */}
@@ -248,6 +248,7 @@ const Register = () => {
             )}
           </motion.button>
         </form>
+
         {step === 1 && (
           <>
             <div className="mt-6 flex items-center justify-between">
