@@ -73,6 +73,11 @@ const CarCard = ({ car, index }) => {
               {formatCurrency(car.price)}
             </span>
             <span className="text-gray-500 text-sm ml-1">/day</span>
+            {car.pricePerHour && (
+              <div className="text-sm font-semibold text-green-500 dark:text-green-400 mt-0.5">
+                {formatCurrency(car.pricePerHour)} <span className="text-gray-500 font-normal">/hour</span>
+              </div>
+            )}
           </div>
           <motion.button
             whileHover={{ scale: 1.05 }}

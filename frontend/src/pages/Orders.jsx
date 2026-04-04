@@ -109,8 +109,13 @@ const Orders = () => {
                   <div className="flex-1">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="text-xl font-bold mb-1 capitalize">
+                        <h3 className="text-xl font-bold mb-1 capitalize flex items-center gap-2">
                           {order.serviceType} Booking
+                          {order.rentalType && order.rentalType !== 'na' && (
+                            <span className="text-xs bg-gray-100 dark:bg-dark-700 text-gray-500 px-2 py-0.5 rounded-md font-semibold uppercase">
+                              {order.rentalType}
+                            </span>
+                          )}
                         </h3>
                         <p className="text-sm text-gray-500 dark:text-gray-400">
                           Order ID: {order._id.slice(-8)}

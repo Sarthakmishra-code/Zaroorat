@@ -64,6 +64,12 @@ const carSchema = new mongoose.Schema(
       min: 0,
     },
 
+    pricePerHour: {
+      type: Number,
+      min: 0,
+      default: null,
+    },
+
     availability: {
       type: Boolean,
       default: true,

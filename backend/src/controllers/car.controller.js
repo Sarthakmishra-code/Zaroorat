@@ -133,7 +133,7 @@ const addCar = asyncHandler(async (req, res) => {
     const {
         name, description, brand_name, category, city, model,
         fuelType, transmission, seatingCapacity, mileage, kmRun,
-        price, registrationNumber, availability
+        price, pricePerHour, registrationNumber, availability
     } = req.body;
 
     if (!name || !brand_name || !category || !city || !model || !price || !registrationNumber) {
@@ -174,6 +174,7 @@ const addCar = asyncHandler(async (req, res) => {
         mileage,
         kmRun,
         price,
+        pricePerHour,
         registrationNumber,
         availability,
         images

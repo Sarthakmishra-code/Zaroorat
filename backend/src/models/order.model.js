@@ -30,6 +30,11 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    rentalType: {
+      type: String,
+      enum: ["hour", "day", "na"],
+      default: "day"
+    },
     status: {
       type: String,
       enum: ['pending', 'confirmed', 'cancelled'],
