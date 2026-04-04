@@ -7,6 +7,11 @@ dotenv.config({ path: './.env' })
 
 const app = express()
 
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  next();
+});
+
 app.use(cors({
     origin: process.env.CORS_ORIGIN === '*' ? true : process.env.CORS_ORIGIN,
     credentials: true
