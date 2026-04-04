@@ -11,6 +11,7 @@ const AddVehicleModal = ({ isOpen, onClose, type, onSuccess }) => {
         category: '',
         city: '',
         price: '',
+        pricePerHour: '',
         registrationNumber: '',
         fuelType: '',
         transmission: '',
@@ -119,6 +120,10 @@ const AddVehicleModal = ({ isOpen, onClose, type, onSuccess }) => {
                         <div>
                             <label className="block text-sm font-medium mb-1">Price (per day) *</label>
                             <input type="number" name="price" required value={formData.price} onChange={handleChange} className="input-field" placeholder="ex: 1500" />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Price (per hour)</label>
+                            <input type="number" name="pricePerHour" value={formData.pricePerHour} onChange={handleChange} className="input-field" placeholder="ex: 150" />
                         </div>
                         <div>
                             <label className="block text-sm font-medium mb-1">City *</label>

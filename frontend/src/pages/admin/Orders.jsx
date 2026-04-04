@@ -144,8 +144,13 @@ const Orders = () => {
                                             <div className="font-mono text-xs font-semibold text-gray-900 dark:text-white bg-gray-100 dark:bg-dark-800 px-2 py-1 rounded inline-block mb-1">
                                                 #{order._id.slice(-8).toUpperCase()}
                                             </div>
-                                            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-1">
+                                            <div className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-1 capitalize">
                                                 {order.serviceType}
+                                                {order.rentalType && order.rentalType !== 'na' && (
+                                                  <span className="text-[10px] bg-gray-200 dark:bg-dark-600 px-1.5 py-0.5 rounded font-bold uppercase text-gray-600 dark:text-gray-300">
+                                                    {order.rentalType}
+                                                  </span>
+                                                )}
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">

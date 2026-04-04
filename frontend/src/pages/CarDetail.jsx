@@ -18,6 +18,7 @@ const CarDetail = () => {
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [rentalType, setRentalType] = useState('day');
 
   useEffect(() => {
     fetchCarDetails();
@@ -49,7 +50,8 @@ const CarDetail = () => {
         serviceType: 'car',
         serviceObjectId: car._id,
         serviceModel: 'Car',
-        price: car.price,
+        price: rentalType === 'hour' ? car.pricePerHour : car.price,
+        rentalType
       };
 
       await orderService.createOrder(orderData);
@@ -166,11 +168,30 @@ const CarDetail = () => {
                 <div className="flex justify-between items-end mb-6">
                   <div>
                     <p className="text-gray-500 mb-1">Rental Price</p>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold text-green-600 dark:text-green-400">
-                        {formatCurrency(car.price)}
-                      </span>
-                      <span className="text-gray-500">/day</span>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-4xl font-bold text-green-600 dark:text-green-400">
+                          {formatCurrency(rentalType === 'hour' ? car.pricePerHour : car.price)}
+                        </span>
+                        <span className="text-gray-500">/{rentalType === 'hour' ? 'hour' : 'day'}</span>
+                      </div>
+                      
+                      {car.pricePerHour && (
+                        <div className="flex gap-2 mt-2 bg-gray-100 dark:bg-dark-700 p-1 rounded-lg">
+                          <button
+                            onClick={() => setRentalType('hour')}
+                            className={`px-4 py-1.5 text-sm rounded-md transition ${rentalType === 'hour' ? 'bg-white dark:bg-dark-600 shadow text-green-600 font-semibold' : 'text-gray-600 dark:text-gray-300'}`}
+                          >
+                            Rent Hourly
+                          </button>
+                          <button
+                            onClick={() => setRentalType('day')}
+                            className={`px-4 py-1.5 text-sm rounded-md transition ${rentalType === 'day' ? 'bg-white dark:bg-dark-600 shadow text-green-600 font-semibold' : 'text-gray-600 dark:text-gray-300'}`}
+                          >
+                            Rent Daily
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

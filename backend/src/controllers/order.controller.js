@@ -1,13 +1,31 @@
 import { Order } from "../models/order.model.js";
+import { Car } from "../models/car.model.js";
+import { Bike } from "../models/bike.model.js";
+import { Hostel } from "../models/hostel.model.js";
 import ApiError from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
 const createOrder = asyncHandler(async (req, res) => {
-    const { serviceType, serviceObjectId, serviceModel, price } = req.body;
+    const { serviceType, serviceObjectId, serviceModel, price, rentalType } = req.body;
 
     if (!serviceType || !serviceObjectId || !serviceModel || !price) {
         throw new ApiError(400, "All fields are required");
+    }
+
+    let updatedService;
+    if (serviceModel === "Car") {
+        updatedService = await Car.findOneAndUpdate({ _id: serviceObjectId, availability: true }, { availability: false });
+    } else if (serviceModel === "Bike") {
+        updatedService = await Bike.findOneAndUpdate({ _id: serviceObjectId, availability: true }, { availability: false });
+    } else if (serviceModel === "Hostel") {
+        updatedService = await Hostel.findOneAndUpdate({ _id: serviceObjectId, availability: true }, { availability: false });
+    } else {
+        throw new ApiError(400, "Invalid service model");
+    }
+
+    if (!updatedService) {
+        throw new ApiError(400, "Service is not available or not found");
     }
 
     const order = await Order.create({
@@ -15,7 +33,8 @@ const createOrder = asyncHandler(async (req, res) => {
         serviceType,
         serviceObjectId,
         serviceModel,
-        price
+        price,
+        rentalType: rentalType || "day"
     });
 
     return res
