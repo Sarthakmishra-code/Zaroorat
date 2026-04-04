@@ -2,7 +2,7 @@ import api from './api';
 
 const adminService = {
     getDashboardStats: async () => {
-        return await api.get('/admin/dashboard');
+        return await api.get('/admin/stats');
     },
 
     // Users
