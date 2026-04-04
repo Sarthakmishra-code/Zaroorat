@@ -5,7 +5,7 @@ import { useCart } from '../../context/CartContext';
 const CITIES = [
   {
     name: 'Greater Noida',
-    image: 'https://images.unsplash.com/photo-1449844908441-8829872d2607?w=400&h=300&fit=crop',
+    image: 'https://www.commercialnoida.com/assets/upload/blog/2a9501d921746aa3aa37377cfaff7580.webp?w=400&h=300&fit=crop',
     description: 'The Planned City'
   },
   {
@@ -15,7 +15,7 @@ const CITIES = [
   },
   {
     name: 'Pari Chowk',
-    image: 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400&h=300&fit=crop',
+    image: 'https://img.hexahome.in/media/blogs/hexahome-blogs/pari-chowk-metro-station/pc02.webp',
     description: 'The Central Connect'
   },
   {
