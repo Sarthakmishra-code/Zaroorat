@@ -29,6 +29,18 @@ import hostelRouter from "./routes/hostel.routes.js";
 import orderRouter from "./routes/order.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(statusCode).json({
+        success: false,
+        message: message,
+        errors: err.errors || [],
+        stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+});
+
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/cars", carRouter)
 app.use("/api/v1/bikes", bikeRouter)
