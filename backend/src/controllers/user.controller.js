@@ -43,7 +43,12 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     const existinguser = await User.findOne({
-        $or: [{ username }, { email }, { phone }]
+        // $or: [{ username }, { email }, { phone }]
+        $or: [
+            { username: username?.toLowerCase() }, 
+            { email: email?.toLowerCase() }, 
+            { phone }
+        ]
     })
 
     if (existinguser) {
