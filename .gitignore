@@ -1,2 +1,4 @@
 .agent
 .env
+git_log.txt
+git_status.txt

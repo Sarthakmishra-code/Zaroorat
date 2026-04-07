@@ -90,7 +90,7 @@ const Register = () => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
+        <form onSubmit={handleSendOTP} className={step === 1 ? "grid md:grid-cols-2 gap-6" : "space-y-6"}>
           {step === 1 ? (
              <>
           {/* Username */}
@@ -294,7 +294,8 @@ const Register = () => {
           <p className="mt-2 text-center text-sm text-gray-500">
             Didn't receive OTP?{' '}
             <button
-              onClick={() => sendOTP(formData.email)}
+              type="button"
+              onClick={() => register(formData)}
               className="text-blue-600 dark:text-blue-400 font-semibold hover:underline"
               disabled={loading}
             >

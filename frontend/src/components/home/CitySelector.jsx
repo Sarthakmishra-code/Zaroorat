@@ -69,11 +69,10 @@ const CitySelector = () => {
             whileHover={{ scale: 1.05, y: -5 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setSelectedCity(city.name)}
-            className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 ${
-              selectedCity === city.name
+            className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 ${selectedCity === city.name
                 ? 'ring-4 ring-blue-500 ring-offset-2 dark:ring-offset-dark-900'
                 : 'hover:shadow-2xl'
-            }`}
+              }`}
           >
             {/* City Image */}
             <div className="relative h-48">
@@ -84,7 +83,7 @@ const CitySelector = () => {
               />
               {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-              
+
               {/* City Info */}
               <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <h3 className="mb-1 text-xl font-bold">{city.name}</h3>
