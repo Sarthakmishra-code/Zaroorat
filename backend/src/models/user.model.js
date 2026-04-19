@@ -47,7 +47,7 @@ const userSchema = new Schema(
         phone: {
             type: Number,
             unique: true,
-            sparse: true, // Handle null or missing values gracefully since it's unique
+            sparse: true, 
             trim: true
         },
 
