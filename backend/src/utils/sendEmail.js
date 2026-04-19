@@ -48,11 +48,16 @@ export const sendAdminRequestEmail = async (userDetails) => {
 export const sendOTPEmail = async (email, otp) => {
     try {
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: "smtp.gmail.com",
+            port: 587,            
+            secure: false,     
             auth: {
-                user: process.env.OFFICIAL_EMAIL,
-                pass: process.env.OFFICIAL_EMAIL_PASSWORD
-            }
+            user: process.env.OFFICIAL_EMAIL,
+            pass: process.env.OFFICIAL_EMAIL_PASSWORD,
+            },
+            tls: {
+                family: 4,     
+            },
         });
 
         const mailOptions = {
