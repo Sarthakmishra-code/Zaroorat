@@ -154,26 +154,6 @@ const Home = () => {
         </div>
       </section> */}
 
-
-      {/* Featured Bikes */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-4xl font-bold">Featured Bikes 🏍️</h2>
-          <Link to="/bikes" className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2">
-            View All <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {loading ? (
-            <div className="col-span-3 flex justify-center py-12"><Loader /></div>
-          ) : (
-            bikes.map((bike, i) => (
-              <BikeCard key={bike._id} bike={bike} index={i} />
-            ))
-          )}
-        </div>
-      </section>
-
       {/* Featured Cars */}
       <section className="bg-gray-50 dark:bg-dark-800 py-16">
         <div className="max-w-7xl mx-auto px-4">
@@ -194,6 +174,26 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Featured Bikes */}
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-4xl font-bold">Featured Bikes 🏍️</h2>
+          <Link to="/bikes" className="text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-2">
+            View All <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {loading ? (
+            <div className="col-span-3 flex justify-center py-12"><Loader /></div>
+          ) : (
+            bikes.map((bike, i) => (
+              <BikeCard key={bike._id} bike={bike} index={i} />
+            ))
+          )}
+        </div>
+      </section>
+
 
       {/* Featured Hostels */}
       <section className="max-w-7xl mx-auto px-4 py-16">
