@@ -29,7 +29,7 @@ export const sendAdminRequestEmail = async (userDetails) => {
                 </table>
                 <br />
                 <p>To approve this request, click the button below:</p>
-                <a href="${process.env.VITE_API_URL || 'http://localhost:8000/api/v1'}/users/approve-admin?email=${encodeURIComponent(email)}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Approve as Admin</a>
+                <a href="${process.env.VITE_API_URL || 'https://zaroorat.onrender.com/api/v1'}/users/approve-admin?email=${encodeURIComponent(email)}" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">Approve as Admin</a>
                 <br /><br />
                 <p>Alternatively, you can log in to your database and change the <code>admin</code> boolean to <code>true</code> for this user.</p>
                 <p>Zaroorat Team</p>
