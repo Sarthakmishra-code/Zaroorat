@@ -7,7 +7,7 @@ The idea behind Zaroorat is to simplify rental discovery and listing by bringing
 
 ## 🚀 Live Deployment
 
-**Live Website:** [Visit Zaroorat]((https://zaroorat.vercel.app/))
+**Live Website:** [Visit Zaroorat](https://zaroorat.vercel.app/)
 
 ## ✨ Features
 
