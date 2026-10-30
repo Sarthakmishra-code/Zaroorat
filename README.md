@@ -43,4 +43,3 @@ Zaroorat was developed as an independent full-stack development project. The obj
 
 Full-Stack Developer | MERN Stack
 
-- GitHub: [Your GitHub Profile](ADD_YOUR_GITHUB_PROFILE_LINK)
